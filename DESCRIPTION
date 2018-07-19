@@ -1,7 +1,7 @@
 Package: customPlotting
 Type: Package
 Title: Collection of custom plotting functions for H2O.ai and other ML tools
-Version: 0.1.0
+Version: 0.1.1
 Author: Max Rahn
 Maintainer: Max Rahn <max.rahn@tum.de>
 Description: The package is intended to provide custom plotting functions for H2O objects
@@ -12,5 +12,7 @@ LazyData: true
 Imports:
     ggplot2,
     reshape2,
-    h2o
+    h2o,
+    plyr,
+    magrittr
 RoxygenNote: 6.0.1
