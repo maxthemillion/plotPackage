@@ -22,7 +22,7 @@ plot_h2o_classification_error <- function(mod){
          x = "Number of trees",
          y = "Classification Error",
          color = "Type of error") +
-    ylim(0, ceiling(max(c_error$value) * 10 + 1)/10) +
+    ylim(0, min(round(max(0.11), digits = 1) + 0.05, 1)) +
     scale_x_continuous(breaks = pretty_breaks())
 
   print(p)
