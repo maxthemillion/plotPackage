@@ -1,16 +1,35 @@
+###### HELPER FUNCTIONS ######
+#' extracts classification errors from h2o.scoreHistory()
+#'
+#' @param mod An h2o classification problem
+#' @return Classification errors
+#'
+h2o_extract_classification_errors <- function(mod){
 
-#' plots test and validation error extracted from an h2o object
+  colnames <- c("validation_classification_error",
+                "training_classification_error")
+
+  if(!colnames %in% names(h2o.scoreHistory(mod))){
+    stop("Model provided is not a classification problem")
+  }
+
+  c_error <- h2o.scoreHistory(mod)[, colnames]
+
+  c_error$idx <- as.numeric(row.names(c_error))
+
+  return(c_error)
+  }
+
+###### PLOTTING FUNCTIONS ######
+#' plots test and validation error extracted from an h2o classification object
 #'
 #' @param mod An h2o.ai model
-#' @return A ggplot2
+#' @return A ggplot2 object
 #'
 plot_h2o_classification_error <- function(mod){
 
-  c_error <- h2o.scoreHistory(mod)[, c("validation_classification_error",
-                                       "training_classification_error")]
-
-  c_error$idx <- as.numeric(row.names(c_error))
-  c_error <- melt(c_error, id.vars = "idx")
+  c_error <- melt(h2o_extract_classification_errors(mod),
+                  id.vars = "idx")
 
   c_error$variable <- as.factor(c_error$variable) %>%
     plyr::revalue(c("validation_classification_error" = "validation",
@@ -29,3 +48,4 @@ plot_h2o_classification_error <- function(mod){
 
   return(p)
 }
+

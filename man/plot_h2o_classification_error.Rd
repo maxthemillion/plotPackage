@@ -2,13 +2,16 @@
 % Please edit documentation in R/h2o_plotting.R
 \name{plot_h2o_classification_error}
 \alias{plot_h2o_classification_error}
-\title{plots test and validation error extracted from an h2o object}
+\title{plots test and validation error extracted from an h2o classification object}
 \usage{
 plot_h2o_classification_error(mod)
 }
 \arguments{
 \item{mod}{An h2o.ai model}
 }
+\value{
+A ggplot2 object
+}
 \description{
-plots test and validation error extracted from an h2o object
+plots test and validation error extracted from an h2o classification object
 }
