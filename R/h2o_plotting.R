@@ -51,9 +51,11 @@ plot_h2o_classification_error <- function(mod){
 }
 
 
-#' plots ROC from a h2o fit
+#' plots ROC from one or multiple fitted h2o models
 #'
 #'
+#' @param ... one or more trained h2o models
+#' @return A ggplot2 object
 plot_h2o_ROC <- function(...){
 
   l <- list(...)
