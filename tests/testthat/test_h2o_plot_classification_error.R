@@ -1,4 +1,3 @@
-context("h2o plots")
 
 library(h2o)
 library(proto)
@@ -46,6 +45,8 @@ rf_test <- setup()
 
 
 ##### tests ######
+context("plot_h2o_classification_error")
+
 test_that("h2o_extract_classification_errors fails on wrong input", {
   df <- data.frame(col1 = c(1,2), col2 = c("x", "y"))
 
@@ -65,7 +66,7 @@ test_that("h2o_extract_classification_errors delivers correct output", {
 
 })
 
-test_that("h2o_plot_classification_error returns ggplot2",
+test_that("h2o_plot_classification_error returns ggplot2 geom_line",
           {
             p <- plot_h2o_classification_error(rf_test)
 
@@ -73,6 +74,20 @@ test_that("h2o_plot_classification_error returns ggplot2",
               sapply(p$layers, function(x) class(x$geom)[[1]]),
               "GeomLine")
           })
+
+## ROC
+
+context("plot_h2o_ROC")
+
+test_that("h2o_plot_ROC returns ggplot2 geom_line on first layer",
+          {
+            p <- h2o_plot_ROC(rf_test)
+
+            expect_identical(
+              sapply(p$layers, function(x) class(x$geom)[[1]]),
+              "GeomLine")
+          })
+
 
 #### clean up ####
 
