@@ -1,4 +1,4 @@
-context("h2o plots: classification error")
+context("h2o plots")
 
 library(h2o)
 library(proto)
@@ -50,8 +50,6 @@ test_that("h2o_extract_classification_errors fails on wrong input", {
   df <- data.frame(col1 = c(1,2), col2 = c("x", "y"))
 
   expect_error(h2o_extract_classification_errors())
-
-
 })
 
 test_that("h2o_extract_classification_errors delivers correct output", {
