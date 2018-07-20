@@ -56,7 +56,10 @@ plot_h2o_classification_error <- function(mod){
 #'
 plot_h2o_ROC <- function(...){
 
-  p <- list(...) %>%
+  l <- list(...)
+  names <- sapply(l, function(x) x@model_id)
+
+  p <- l %>%
     # map a function to each element in the list
     map(function(x) x %>% h2o.performance(valid=T) %>%
           # from all these 'paths' in the object
@@ -67,17 +70,18 @@ plot_h2o_ROC <- function(...){
           add_row(tpr=0,fpr=0,.before=T) %>%
           add_row(tpr=0,fpr=0,.before=F)) %>%
     # add a column of model name for future grouping in ggplot2
-    map2(c('Logistic Regression','Decision Tree','Random Forest','Gradient Boosting'),
-         function(x,y) x %>% add_column(model=y)) %>%
+    map2(names,
+         function(x,y) x %>%
+           add_column(Model=y)) %>%
     # reduce four data.frame to one
     reduce(rbind) %>%
     # plot fpr and tpr, map model to color as grouping
-    ggplot(aes(fpr,tpr,col=model))+
-    geom_line()+
+    ggplot(aes(fpr,tpr,col=Model))+
+    geom_point(alpha = 0.5, shape = 1)+
     geom_segment(aes(x=0,y=0,xend = 1, yend = 1),linetype = 2,col='grey')+
     xlab('False Positive Rate')+
     ylab('True Positive Rate')+
-    ggtitle('ROC Curve for Four Models')
+    ggtitle('ROC comparing models')
 
   print(p)
 
