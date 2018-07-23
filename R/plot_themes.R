@@ -8,7 +8,8 @@
 clean_out_plot <- function(p){
   res <- p %>%
     theme_remove_grid() %>%
-    theme_remove_background()
+    theme_remove_background() %>%
+    theme_apply_msg_colors()
 
   return(res)
 }
