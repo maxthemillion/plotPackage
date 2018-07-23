@@ -104,7 +104,7 @@ theme_show_axes <- function(p){
 #'
 #'
 theme_show_axis_x <- function(p){
-  p +
+  res <- p +
     theme(axis.line.x = element_line(color="black", size = 0.5))
   return(res)
 }
