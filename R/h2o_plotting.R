@@ -44,9 +44,8 @@ plot_h2o_classification_error <- function(mod){
          y = "Classification Error",
          color = "Type of error") +
     ylim(0, min(round(max(c_error$value), digits = 1) + 0.05, 1)) +
-    scale_x_continuous(breaks = pretty_breaks())
-
-  print(p)
+    scale_x_continuous(breaks = pretty_breaks()) %>%
+    clean_out_plot()
 
   return(p)
 }
@@ -84,9 +83,8 @@ plot_h2o_ROC <- function(...){
     geom_segment(aes(x=0,y=0,xend = 1, yend = 1),linetype = 2,col='grey')+
     xlab('False Positive Rate')+
     ylab('True Positive Rate')+
-    ggtitle('ROC comparing models')
-
-  print(p)
+    ggtitle('ROC comparing models') %>%
+    clean_out_plot()
 
   return(p)
 }
