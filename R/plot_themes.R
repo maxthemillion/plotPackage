@@ -13,7 +13,69 @@ clean_out_plot <- function(p){
   return(res)
 }
 
-##### single modifications ####
+##### color palettes #####
+#' returns the msg color palette
+#'
+#'
+#'
+get_palette <- function(neutral = T, named = F){
+  if(neutral){
+    msg_palette <- c(
+      teal1 = rgb(96, 163, 188, maxColorValue = 255),
+      teal2 = rgb(63, 126, 150, maxColorValue = 255),
+      teal3 = rgb(42, 84, 100, maxColorValue = 255),
+      teal4 = rgb(160, 200, 215, maxColorValue = 255),
+      grey1 = rgb(203, 203, 203, maxColorValue = 255),
+      grey2 = rgb(127, 127, 127, maxColorValue = 255),
+      grey3 = rgb(63, 63, 63, maxColorValue = 255),
+      grey4 = rgb(234, 234, 234, maxColorValue = 255),
+      black = rgb(0, 0, 0, maxColorValue = 255),
+      red = rgb(132, 20, 57, maxColorValue = 255)
+    )
+
+  } else {
+    msg_palette <- c(
+      black = rgb(0, 0, 0, maxColorValue = 255),
+      red = rgb(132, 20, 57, maxColorValue = 255),
+      teal1 = rgb(96, 163, 188, maxColorValue = 255),
+      teal2 = rgb(63, 126, 150, maxColorValue = 255),
+      teal3 = rgb(42, 84, 100, maxColorValue = 255),
+      teal4 = rgb(160, 200, 215, maxColorValue = 255),
+      grey1 = rgb(203, 203, 203, maxColorValue = 255),
+      grey2 = rgb(127, 127, 127, maxColorValue = 255),
+      grey3 = rgb(63, 63, 63, maxColorValue = 255),
+      grey4 = rgb(234, 234, 234, maxColorValue = 255)
+    )
+  }
+
+  if(!named){
+    msg_palette <- unname(msg_palette)
+  }
+
+  return(msg_palette)
+}
+
+#' returns a specific msg color from the palette
+#'
+#' @param color A color name or index
+#'
+#'
+msg_color <- function(color = "red") {
+  palette <- get_palette(named = T)
+
+  if (is.numeric(color)) palette[color]
+  else palette[tolower(color)]
+
+}
+
+##### modifications ####
+
+theme_apply_msg_colors <- function(p){
+  res <- p +
+    scale_fill_manual(values = get_palette(named = F)) +
+    scale_color_manual(values = get_palette(named = F))
+ return(res)
+}
 
 #' rotate x axis labels
 #'
