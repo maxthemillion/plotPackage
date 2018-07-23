@@ -83,7 +83,7 @@ theme_apply_msg_colors <- function(p){
 #' @param angle The angle by which labels should be rotated. Defaults to 90.
 #'
 theme_rotate_labels_x <- function(p, angle = 90){
-  res <- p %>%
+  res <- p +
     theme(axis.text.x = element_text(angle = angle, vjust = 0.5))
   return(res)
 }
@@ -93,8 +93,8 @@ theme_rotate_labels_x <- function(p, angle = 90){
 #' @inheritParams clean_out_plot
 #'
 theme_rotate_labels_x_reset <- function(p){
-  res <- p %>%
-    theme_rotate_labels_x(p, angle = 0)
+  res <- p +
+    theme_rotate_labels_x(angle = 0)
   return(res)
 }
 
