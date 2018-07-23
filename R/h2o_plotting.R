@@ -38,6 +38,7 @@ plot_h2o_classification_error <- function(mod){
 
   p <- ggplot(c_error, aes(x = idx, y = value, color = variable)) +
     geom_line() +
+    geom_point() +
     labs(title = "Classification error",
          x = "Number of trees",
          y = "Classification Error",

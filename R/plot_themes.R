@@ -9,7 +9,8 @@ clean_out_plot <- function(p){
   res <- p %>%
     theme_remove_grid() %>%
     theme_remove_background() %>%
-    theme_apply_msg_colors()
+    theme_apply_msg_colors() %>%
+    theme_show_axes()
 
   return(res)
 }
@@ -71,12 +72,53 @@ msg_color <- function(color = "red") {
 
 ##### modifications ####
 
+#' applies the msg color palette
+#'
+#' @param p A ggplot object
+#' @return The modified ggplot object
+#'
 theme_apply_msg_colors <- function(p){
   res <- p +
     scale_fill_manual(values = get_palette(named = F)) +
     scale_color_manual(values = get_palette(named = F))
  return(res)
 }
+
+
+#' Show axes as solid black lines
+#'
+#' @param p a ggplot object
+#' @return The modified ggplot object
+#'
+theme_show_axes <- function(p){
+  res <- p %>%
+    theme_show_axis_y() %>%
+    theme_show_axis_x()
+  return(res)
+
+}
+
+#' show x axis as solid black line
+#'
+#' @inheritParams theme_show_axes
+#'
+#'
+theme_show_axis_x <- function(p){
+  p +
+    theme(axis.line.x = element_line(color="black", size = 0.5))
+  return(res)
+}
+
+#' show y axis as solid black line
+#'
+#' @inheritParams theme_show_axes
+#'
+theme_show_axis_y <- function(p){
+  res <- p +
+    theme(axis.line.y = element_line(color="black", size = 0.5))
+  return(res)
+}
+
 
 #' rotate x axis labels
 #'
