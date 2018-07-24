@@ -3,13 +3,14 @@
 #' applies custom modifications to ggplot object
 #'
 #' @param p A ggplot object
+#' @param color_neutral A boolean indicating whether a neutral palette should be applied
 #' @return The modified ggplot object
 #'
-clean_out_plot <- function(p){
+clean_out_plot <- function(p, color_neutral = T){
   res <- p %>%
     theme_remove_grid() %>%
     theme_remove_background() %>%
-    theme_apply_msg_colors() %>%
+    theme_apply_msg_colors(neutral = color_neutral) %>%
     theme_show_axes()
 
   return(res)
@@ -77,10 +78,10 @@ msg_color <- function(color = "red") {
 #' @param p A ggplot object
 #' @return The modified ggplot object
 #'
-theme_apply_msg_colors <- function(p){
+theme_apply_msg_colors <- function(p, neutral = T){
   res <- p +
-    scale_fill_manual(values = get_palette(named = F)) +
-    scale_color_manual(values = get_palette(named = F))
+    scale_fill_manual(values = get_palette(neutral = neutral, named = F)) +
+    scale_color_manual(values = get_palette(neutral = neutral, named = F))
  return(res)
 }
 
@@ -95,7 +96,6 @@ theme_show_axes <- function(p){
     theme_show_axis_y() %>%
     theme_show_axis_x()
   return(res)
-
 }
 
 #' show x axis as solid black line
@@ -118,7 +118,6 @@ theme_show_axis_y <- function(p){
     theme(axis.line.y = element_line(color="black", size = 0.5))
   return(res)
 }
-
 
 #' rotate x axis labels
 #'
