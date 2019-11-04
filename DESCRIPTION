@@ -16,6 +16,7 @@ Imports:
     magrittr,
     plyr,
     purrr,
+    RColorBrewer,
     reshape2,
     tibble
 RoxygenNote: 6.0.1

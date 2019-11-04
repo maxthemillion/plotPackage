@@ -6,23 +6,70 @@
 #' @param color_neutral A boolean indicating whether a neutral palette should be applied
 #' @return The modified ggplot object
 #'
-clean_out_plot <- function(p, color_neutral = T){
+clean_out_plot <- function(p, color_palette = "msg_standard"){
   res <- p %>%
     theme_remove_grid() %>%
     theme_remove_background() %>%
-    theme_apply_msg_colors(neutral = color_neutral) %>%
-    theme_show_axes()
+    theme_apply_colors(color_palette = color_palette) %>%
+    theme_show_axes() %>%
+    theme_set_font_size
 
   return(res)
 }
 
 ##### color palettes #####
+  get_custom_palette <- function(name = "grey3", named = F){
+
+  palettes = list(
+    grey3 = c(grey1 = "grey14",
+              grey2 = "grey30",
+              grey3 = "grey40"),
+
+    msg_neutral = c(
+      teal1 = rgb(96, 163, 188, maxColorValue = 255),
+      teal2 = rgb(63, 126, 150, maxColorValue = 255),
+      teal3 = rgb(42, 84, 100, maxColorValue = 255),
+      teal4 = rgb(160, 200, 215, maxColorValue = 255),
+      grey1 = rgb(203, 203, 203, maxColorValue = 255),
+      grey2 = rgb(127, 127, 127, maxColorValue = 255),
+      grey3 = rgb(63, 63, 63, maxColorValue = 255),
+      grey4 = rgb(234, 234, 234, maxColorValue = 255),
+      black = rgb(0, 0, 0, maxColorValue = 255),
+      red = rgb(132, 20, 57, maxColorValue = 255)
+    ),
+
+    msg_standard = c(
+      black = rgb(0, 0, 0, maxColorValue = 255),
+      red = rgb(132, 20, 57, maxColorValue = 255),
+      teal1 = rgb(96, 163, 188, maxColorValue = 255),
+      teal2 = rgb(63, 126, 150, maxColorValue = 255),
+      teal3 = rgb(42, 84, 100, maxColorValue = 255),
+      teal4 = rgb(160, 200, 215, maxColorValue = 255),
+      grey1 = rgb(203, 203, 203, maxColorValue = 255),
+      grey2 = rgb(127, 127, 127, maxColorValue = 255),
+      grey3 = rgb(63, 63, 63, maxColorValue = 255),
+      grey4 = rgb(234, 234, 234, maxColorValue = 255)
+    )
+  )
+
+  res <- palettes[name]
+
+  if(!named){
+    res <- unname(res)
+  }
+
+  return(res)
+}
+
+
+
 #' returns the msg color palette
 #'
 #'
 #'
-get_palette <- function(neutral = T, named = F){
-  if(neutral){
+get_msg_palette <- function(neutral = T, named = F){
+
+    if(neutral){
     msg_palette <- c(
       teal1 = rgb(96, 163, 188, maxColorValue = 255),
       teal2 = rgb(63, 126, 150, maxColorValue = 255),
@@ -64,7 +111,7 @@ get_palette <- function(neutral = T, named = F){
 #'
 #'
 msg_color <- function(color = "red") {
-  palette <- get_palette(named = T)
+  palette <- get_msg_palette(named = T)
 
   if (is.numeric(color)) palette[color]
   else palette[tolower(color)]
@@ -78,11 +125,25 @@ msg_color <- function(color = "red") {
 #' @param p A ggplot object
 #' @return The modified ggplot object
 #'
-theme_apply_msg_colors <- function(p, neutral = T){
-  res <- p +
-    scale_fill_manual(values = get_palette(neutral = neutral, named = F)) +
-    scale_color_manual(values = get_palette(neutral = neutral, named = F))
- return(res)
+theme_apply_colors <- function(p, color_palette){
+  if(color_palette == "standard"){return(p)}
+
+  if (color_palette == "brewer1"){
+    res <- p +
+      scale_fill_brewer(palette = "Dark2") +
+      scale_color_brewer(palette = "Dark2")
+
+  } else if (color_palette == "brewer2"){
+    res <- p +
+      scale_fill_brewer(palette = "Paired") +
+      scale_color_brewer(palette = "Paired")
+  } else {
+    res <- p +
+      scale_fill_manual(values = get_custom_palette(name = color_palette, named = F)) +
+      scale_color_manual(values = get_custom_palette(name = color_palette, named = F))
+  }
+
+return(res)
 }
 
 
@@ -105,7 +166,7 @@ theme_show_axes <- function(p){
 #'
 theme_show_axis_x <- function(p){
   res <- p +
-    theme(axis.line.x = element_line(color="black", size = 0.5))
+    theme(axis.line.x = element_line(color="black", size = 0.25))
   return(res)
 }
 
@@ -115,7 +176,7 @@ theme_show_axis_x <- function(p){
 #'
 theme_show_axis_y <- function(p){
   res <- p +
-    theme(axis.line.y = element_line(color="black", size = 0.5))
+    theme(axis.line.y = element_line(color="black", size = 0.25))
   return(res)
 }
 
@@ -189,3 +250,13 @@ theme_remove_background <- function(p){
       panel.background = element_rect(fill = NA)
     )
 }
+
+theme_set_font_size <- function(p){
+  res <- p +
+    theme(title = element_text(size = 8),
+          axis.title = element_text(size = 10),
+          axis.text = element_text(size = 8)
+          )
+}
+
+

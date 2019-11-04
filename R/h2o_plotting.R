@@ -9,9 +9,9 @@ h2o_extract_classification_errors <- function(mod){
   colnames <- c("validation_classification_error",
                 "training_classification_error")
 
-  if(!colnames %in% names(h2o::h2o.scoreHistory(mod))){
-    stop("Model provided is not a classification problem")
-  }
+#  if(!colnames %in% names(h2o::h2o.scoreHistory(mod))){
+#    stop("Model provided is not a classification problem")
+#  }
 
   c_error <- h2o::h2o.scoreHistory(mod)[, colnames]
 
@@ -28,7 +28,6 @@ h2o_extract_classification_errors <- function(mod){
 #' @return A ggplot2 object
 #'
 plot_h2o_classification_error <- function(mod){
-
   c_error <- reshape2::melt(h2o_extract_classification_errors(mod),
                   id.vars = "idx")
 
@@ -39,14 +38,26 @@ plot_h2o_classification_error <- function(mod){
   p <- ggplot2::ggplot(c_error, aes(x = idx, y = value, color = variable)) +
     ggplot2::geom_line() +
     ggplot2::geom_point() +
-    ggplot2::labs(title = "Classification error",
+    ggplot2::labs(title = paste("Classification errors of", mod@model_id, sep = " "),
          x = "Number of trees",
          y = "Classification Error",
          color = "Type of error") +
     ggplot2::ylim(0, min(round(max(c_error$value), digits = 1) + 0.05, 1)) +
-    ggplot2::scale_x_continuous(breaks = pretty_breaks())
+    ggplot2::scale_x_continuous(breaks = pretty_breaks()) +
+    ggplot2::geom_hline(aes(yintercept= 0.1),
+                        color = "grey",
+                        linetype= "dashed")
 
-  return(clean_out_plot(p, color_neutral = F))
+  return(clean_out_plot(p, color_palette = "standard"))
+}
+
+plot_h2o_classification_error <- function(...){
+  mods = list(...)
+
+  for (elem in mods){
+    c_error[elem@model_id] = reshape2::melt(h2o_extract_classification_errors(mod),
+                                            id.vars = "idx")
+  }
 }
 
 
@@ -56,14 +67,13 @@ plot_h2o_classification_error <- function(mod){
 #' @param ... one or more trained h2o models
 #' @return A ggplot2 object
 plot_h2o_ROC <- function(...){
-
   l <- list(...)
   names <- sapply(l, function(x) x@model_id)
-  auc <- sapply(l, function(x) round(h2o::h2o.auc(x), digits = 4))
 
-  annotations <- data.frame(models = names, AUC = auc)
+  #auc <- sapply(l, function(x) round(h2o::h2o.auc(x), digits = 4))
+  #annotations <- data.frame(models = names, AUC = auc)
 
-  p <- l %>%
+  d <- l %>%
     # map a function to each element in the list
     purrr::map(function(x) x %>% h2o.performance(valid=T) %>%
           # from all these 'paths' in the object
@@ -78,18 +88,19 @@ plot_h2o_ROC <- function(...){
          function(x,y) x %>%
            tibble::add_column(Model=y)) %>%
     # reduce four data.frame to one
-    purrr::reduce(rbind) %>%
+    purrr::reduce(rbind)
+
+  d$Model <- factor(d$Model, levels = rev(names))
+
+  p <- d %>%
     # plot fpr and tpr, map model to color as grouping
     ggplot2::ggplot(aes(fpr,tpr,col=Model)) +
-    ggplot2::geom_point(alpha = 0.5, shape = 1) +
+    ggplot2::geom_line(size = 1) +
     ggplot2::geom_segment(aes(x=0,y=0,xend = 1, yend = 1),linetype = 2,col='grey') +
     ggplot2::labs(title = "Receiver Operating Characteristic (ROC)",
-                  x = "False Positive Rate (Sensitivity)",
-                  y = "True Positive Rate (100-Specificy)") +
-    ggplot2::annotation_custom(gridExtra::tableGrob(annotations),
-                               xmin = 0.8,
-                               ymin = -0.8)
+                  x = "False Positive Rate",
+                  y = "True Positive Rate") +
+    ggplot2::theme(legend.position = c(0.8, 0.2))
 
-
-  return(clean_out_plot(p, color_neutral = F))
+  return(clean_out_plot(p, color_palette = "standard"))
 }
